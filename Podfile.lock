@@ -1,0 +1,40 @@
+PODS:
+  - iOSDropDown (0.4.0)
+  - IQKeyboardManagerSwift (6.5.10)
+  - SideMenu (6.5.0)
+  - TabPageViewController (0.2.8)
+  - ZCardView (0.1.0)
+
+DEPENDENCIES:
+  - iOSDropDown (from `https://github.com/jriosdev/iOSDropDown.git`)
+  - IQKeyboardManagerSwift
+  - SideMenu
+  - TabPageViewController (~> 0.2)
+  - ZCardView
+
+SPEC REPOS:
+  trunk:
+    - IQKeyboardManagerSwift
+    - SideMenu
+    - TabPageViewController
+    - ZCardView
+
+EXTERNAL SOURCES:
+  iOSDropDown:
+    :git: https://github.com/jriosdev/iOSDropDown.git
+
+CHECKOUT OPTIONS:
+  iOSDropDown:
+    :commit: 79970152b7873100308aba95ede0f18d313683b9
+    :git: https://github.com/jriosdev/iOSDropDown.git
+
+SPEC CHECKSUMS:
+  iOSDropDown: 9b61391b4137a71b7154b4f7cdac249bcee9f9a9
+  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  SideMenu: f583187d21c5b1dd04c72002be544b555a2627a2
+  TabPageViewController: 8bd4104909754416b35a98f3b72a5b674ab20dd5
+  ZCardView: 667e90343022a51c4babe494dfbd49c238f5505c
+
+PODFILE CHECKSUM: 66c79a9a77184ba72a614b7f1e8c4ae02a2036f4
+
+COCOAPODS: 1.11.3

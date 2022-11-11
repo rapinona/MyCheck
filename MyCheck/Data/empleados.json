@@ -1,0 +1,14 @@
+[
+    {
+        "id_recorrido":1,
+        "id_empleado": 315297128,
+        "nombre":"Rodrigo Antonio Piñón Ayala",
+        "tienda": "Satelite"
+    },
+    {
+        "id_recorrido":1,
+        "id_empleado": 315297121,
+        "nombre":"Norma Angélica Ayala Sanchez",
+        "tienda": "Satelite"
+    }
+]
