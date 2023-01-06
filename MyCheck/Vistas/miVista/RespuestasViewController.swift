@@ -30,10 +30,10 @@ class RespuestasViewController: UIViewController,  UITableViewDataSource, UITabl
         cell.pregunta.text = respuesta.pregunta
         cell.categoria.text = respuesta.categoria
         
-        if(respuesta.cumple == "No Cumple"){
+        if(respuesta.cumple == false){
             cell.aceptar.isHidden = true
             cell.rechazo.isHidden = false
-        }else if(respuesta.cumple == "Cumple"){
+        }else if(respuesta.cumple == true){
             cell.aceptar.isHidden = false
             cell.rechazo.isHidden = true
         }else{
@@ -50,7 +50,7 @@ class RespuestasViewController: UIViewController,  UITableViewDataSource, UITabl
                     completion(true)
                 }
         
-        respuestasDM.updateCumple(index: indexPath.row, cumple: "No Cumple")
+        respuestasDM.updateCumple(index: indexPath.row, cumple: false)
         
         self.RespuestaTable.reloadData()
         
@@ -70,7 +70,7 @@ class RespuestasViewController: UIViewController,  UITableViewDataSource, UITabl
             
         }
         
-        respuestasDM.updateCumple(index: indexPath.row, cumple: "Cumple")
+        respuestasDM.updateCumple(index: indexPath.row, cumple: true)
         
         self.RespuestaTable.reloadData()
         
@@ -88,7 +88,11 @@ class RespuestasViewController: UIViewController,  UITableViewDataSource, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.respuestasDM.fetch(id_recorrido: currentRecorrido, id_empleado: currentEmpleado)
+        self.respuestasDM.fetch(id_recorrido:currentRecorrido,id_empleado:currentEmpleado){
+            DispatchQueue.main.async {
+                self.RespuestaTable.reloadData()
+            }
+        }
         // Do any additional setup after loading the view.
     }
 

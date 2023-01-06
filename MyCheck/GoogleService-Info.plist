@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>891952535840-ddt3rpi11pp5th3b76g521e2f83qquo2.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.891952535840-ddt3rpi11pp5th3b76g521e2f83qquo2</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDGBIUXknSxI410YNzr_3RyjjIH78V28Uc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>891952535840</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>mx.pinon.rodrigo.MyCheck</string>
+	<key>PROJECT_ID</key>
+	<string>mockup-trajes</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mockup-trajes.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:891952535840:ios:c4a09734eb84a699685f45</string>
+</dict>
+</plist>

@@ -15,9 +15,11 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
     @IBOutlet var recorridoTableView: UITableView!
     
     let estatusDM = EstatusDataManager()
-    let recorridoDM = RecorridosDataManager()
+    let context = (UIApplication.shared.delegate! as! AppDelegate).persistentContainer.viewContext
+    var recorridoDM : RecorridosDataManager?
     var selectedEstatus: Int = 0
     var currentRecorrido: Recorrido?
+    var todosRecorridos : [Recorrido]?
     
     //Collection view para las cards
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -29,6 +31,29 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "estatusMiVista", for: indexPath) as! MiVistaEstatusCollectionViewCell
         
         cell.EstatusLabel.text = estatusDM.estatusAt(index: indexPath.row)
+        
+        switch indexPath.row {
+        case 0:
+            cell.EstatusPercentage.text = String(recorridoDM!.procentajeEnviadas()) + "%"
+            cell.EstatusProgress.progress = Float(recorridoDM!.procentajeEnviadas())/100
+            cell.EstatusView.backgroundColor = UIColor(red: 0.81, green: 0.82, blue: 0.83, alpha: 1.00)
+        case 1:
+            cell.EstatusPercentage.text = String(recorridoDM!.procentajeRecibidas()) + "%"
+            cell.EstatusProgress.progress = Float(recorridoDM!.procentajeRecibidas())/100
+            cell.EstatusView.backgroundColor = UIColor(red: 0.72, green: 0.85, blue: 0.93, alpha: 1.00)
+        case 2:
+            cell.EstatusPercentage.text = String(recorridoDM!.procentajeEnProceso()) + "%"
+            cell.EstatusProgress.progress = Float(recorridoDM!.procentajeEnProceso())/100
+            cell.EstatusView.backgroundColor = UIColor(red: 0.95, green: 0.78, blue: 0.22, alpha: 1.00)
+        case 3:
+            cell.EstatusPercentage.text = String(recorridoDM!.procentajeCompletadas()) + "%"
+            cell.EstatusProgress.progress = Float(recorridoDM!.procentajeCompletadas())/100
+            cell.EstatusView.backgroundColor = UIColor(red: 0.45, green: 0.95, blue: 0.44, alpha: 1.00)
+            
+        default:
+            cell.EstatusPercentage.text = "0"
+        }
+        
         cell.layer.cornerRadius = 20
         cell.layer.shadowPath = UIBezierPath(roundedRect:cell.bounds, cornerRadius: 20).cgPath
         cell.layer.shadowRadius = 1
@@ -49,14 +74,14 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
     
     //Table View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        recorridoDM.recorridosCount()
+        recorridoDM!.recorridosCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "recorrido", for: indexPath) as! RecorridoTableViewCell
         
-        let recorrido = recorridoDM.recorridoAt(index: indexPath.row)
+        let recorrido = recorridoDM!.recorridoAt(index: indexPath.row)
         
         cell.nombre.text = recorrido.nombre
         cell.fecha_fin.text = recorrido.fecha_fin
@@ -68,7 +93,7 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentRecorrido = recorridoDM.recorridoAt(index: indexPath.row)
+        currentRecorrido = recorridoDM!.recorridoAt(index: indexPath.row)
         self.performSegue(withIdentifier: "detalles", sender: Self.self)
         
         
@@ -85,6 +110,7 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
             
             let destination = segue.destination as! EstatusViewController
             destination.selectedEstatus = self.selectedEstatus
+            destination.todosRecorridos = todosRecorridos
         }
     }
     
@@ -104,7 +130,16 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.recorridoDM.fetch()
+        recorridoDM = RecorridosDataManager(context:context)
+
+        recorridoDM!.fetch(anteriores:[],context:context){
+            DispatchQueue.main.async {
+                self.recorridoTableView.reloadData()
+                self.EstatusCard.reloadData()
+                self.todosRecorridos = self.recorridoDM!.todosRecorridos()
+                
+            }
+        }
         // Do any additional setup after loading the view.
     }
 

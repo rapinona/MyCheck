@@ -10,21 +10,17 @@ import UIKit
 class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
 
 
-    var currentEmpleado = 315297128
+    var currentEmpleado : EmpleadoAsignado?
     var currentRecorrido : Recorrido?
     let empleadoDM = EmpleadoDataManager()
-    
+    @IBOutlet var DescripcionRecorrido: UITextView!
     @IBOutlet var NombreRecorrido: UILabel!
-    @IBOutlet var DescripcionRecorrido: UILabel!
     @IBOutlet var FechaInicio: UILabel!
     @IBOutlet var FechaFin: UILabel!
     @IBOutlet var EmpleadosTable: UITableView!
     
-    //EMPLEADOS TABLE
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Enviadas"
-    }
+    //EMPLEADOS TABLE
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return empleadoDM.empleadosCount()
@@ -38,12 +34,24 @@ class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UIT
         
         cell.NombreEmpleado.text = empleado.nombre
         cell.TiendaEmpleado.text = empleado.tienda
+        switch empleado.status{
+        case 0:
+            cell.statusEmpleado.text="Enviadas"
+        case 1:
+            cell.statusEmpleado.text="Recibidas"
+        case 2:
+            cell.statusEmpleado.text="En Proceso"
+        case 3:
+            cell.statusEmpleado.text="Completadas"
+        default:
+            cell.statusEmpleado.text="Enviadas"
+        }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentEmpleado = empleadoDM.empleadoAt(index: indexPath.row).id_empleado
+        currentEmpleado = empleadoDM.empleadoAt(index: indexPath.row)
         
         self.performSegue(withIdentifier: "respuestas", sender: Self.self)
     }
@@ -51,19 +59,22 @@ class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UIT
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! RespuestasViewController
-        destination.currentRecorrido = currentRecorrido!.id
-        destination.currentEmpleado = currentEmpleado
+        destination.currentRecorrido = currentRecorrido!.id_recorrido
+        destination.currentEmpleado = currentEmpleado!.id_empleado
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.empleadoDM.fetch(id_recorrido: currentRecorrido!.id)
-        
-        self.NombreRecorrido.text = currentRecorrido!.nombre
-        self.DescripcionRecorrido.text = currentRecorrido!.descripcion
-        self.FechaInicio.text = currentRecorrido!.fecha_inicio
-        self.FechaFin.text = currentRecorrido!.fecha_fin
+        self.empleadoDM.fetch(id_recorrido: currentRecorrido!.id_recorrido){
+            DispatchQueue.main.async {
+                self.EmpleadosTable.reloadData()
+            }
+        }
+        self.NombreRecorrido.text = self.currentRecorrido!.nombre
+        self.DescripcionRecorrido.text = self.currentRecorrido!.descripcion
+        self.FechaInicio.text = self.currentRecorrido!.fecha_inicio
+        self.FechaFin.text = self.currentRecorrido!.fecha_fin
         // Do any additional setup after loading the view.
     }
     

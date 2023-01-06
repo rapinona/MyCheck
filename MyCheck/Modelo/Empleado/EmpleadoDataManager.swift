@@ -7,13 +7,12 @@
 
 import Foundation
 
-class RespuestaDataManager{
+class EmpleadosDataManager{
     
-    private var respuestas : [Respuesta] = []
+    private var empleados : [Empleado] = []
     
-    func fetch(id_recorrido : Int,id_empleado : Int,completion: @escaping () -> Void){
-        
-        guard let laURL = URL(string: "https://my.api.mockaroo.com/respuestas/"+String(id_recorrido)+"/"+String(id_empleado)+".json")
+    func fetch(completion: @escaping () -> Void){
+        guard let laURL = URL(string: "https://my.api.mockaroo.com/empleados.json")
         else {return}
         
         print(laURL)
@@ -31,8 +30,8 @@ class RespuestaDataManager{
                         
             if let data = data {
                 do{
-                    let results = try JSONDecoder().decode([Respuesta].self,from: data)
-                    self.respuestas = results
+                    let results = try JSONDecoder().decode([Empleado].self,from: data)
+                    self.empleados = results
                     completion()
                 }
                 catch{
@@ -43,18 +42,23 @@ class RespuestaDataManager{
         task.resume()
     }
     
-    func respuestasCount() -> Int{
-        return respuestas.count
+    func empleadosCount() -> Int{
+        return empleados.count
     }
     
-    func respuestaAt(index:Int) -> Respuesta{
-        return respuestas[index]
+    func empleadoAt(index:Int) -> Empleado{
+        return empleados[index]
     }
     
-    func updateCumple(index:Int,cumple:Bool){
-        respuestas[index].cumple = cumple
-        
-        return
+    func todosEmpleadosNombre() -> [String]{
+        let nombres = empleados.map({$0.nombre + " " + $0.apellido})
+        return nombres
+    }
+    
+    func todosEmpleadosID() -> [Int]{
+        let ids = empleados.map({$0.id})
+        return ids
     }
     
 }
+

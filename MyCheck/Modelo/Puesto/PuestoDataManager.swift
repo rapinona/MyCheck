@@ -7,13 +7,12 @@
 
 import Foundation
 
-class RespuestaDataManager{
+class PuestoDataManager{
     
-    private var respuestas : [Respuesta] = []
+    private var puestos : [Puesto] = []
     
-    func fetch(id_recorrido : Int,id_empleado : Int,completion: @escaping () -> Void){
-        
-        guard let laURL = URL(string: "https://my.api.mockaroo.com/respuestas/"+String(id_recorrido)+"/"+String(id_empleado)+".json")
+    func fetch(completion: @escaping () -> Void){
+        guard let laURL = URL(string: "https://my.api.mockaroo.com/puestos.json")
         else {return}
         
         print(laURL)
@@ -31,8 +30,8 @@ class RespuestaDataManager{
                         
             if let data = data {
                 do{
-                    let results = try JSONDecoder().decode([Respuesta].self,from: data)
-                    self.respuestas = results
+                    let results = try JSONDecoder().decode([Puesto].self,from: data)
+                    self.puestos = results
                     completion()
                 }
                 catch{
@@ -43,18 +42,23 @@ class RespuestaDataManager{
         task.resume()
     }
     
-    func respuestasCount() -> Int{
-        return respuestas.count
+    func puestosCount() -> Int{
+        return puestos.count
     }
     
-    func respuestaAt(index:Int) -> Respuesta{
-        return respuestas[index]
+    func puestosAt(index:Int) -> Puesto{
+        return puestos[index]
     }
     
-    func updateCumple(index:Int,cumple:Bool){
-        respuestas[index].cumple = cumple
-        
-        return
+    func todosPuestosNombre() -> [String]{
+        let nombres = puestos.map({$0.puesto})
+        return nombres
+    }
+    
+    func todosPuestosID() -> [Int]{
+        let ids = puestos.map({$0.id})
+        return ids
     }
     
 }
+

@@ -8,5 +8,7 @@ target 'MyCheck' do
   pod 'TabPageViewController', '~> 0.2'
   pod 'SideMenu'
   pod 'IQKeyboardManagerSwift'
+  pod 'MFCard'
+  pod 'RSSelectionMenu'
 
 end

@@ -1,18 +1,17 @@
 //
-//  EmpleadoTableViewCell.swift
+//  FormularioTableViewCell.swift
 //  MyCheck
 //
-//  Created by Piñón Ayala Rodrigo  on 12/09/22.
+//  Created by Piñón Ayala Rodrigo  on 03/12/22.
 //
 
 import UIKit
 
-class EmpleadoTableViewCell: UITableViewCell {
+class FormularioTableViewCell: UITableViewCell {
 
     
-    @IBOutlet var NombreEmpleado: UILabel!
-    @IBOutlet var TiendaEmpleado: UILabel!
-    @IBOutlet var statusEmpleado: UILabel!
+    @IBOutlet var nombreForm: UILabel!
+    @IBOutlet var deleteBtn: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()

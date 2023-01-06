@@ -1,19 +1,14 @@
 //
-//  EmpleadoTableViewCell.swift
+//  MenuTableCellTableViewCell.swift
 //  MyCheck
 //
-//  Created by Piñón Ayala Rodrigo  on 12/09/22.
+//  Created by Piñón Ayala Rodrigo  on 19/11/22.
 //
 
 import UIKit
 
-class EmpleadoTableViewCell: UITableViewCell {
+class MenuTableCellTableViewCell: UITableViewCell {
 
-    
-    @IBOutlet var NombreEmpleado: UILabel!
-    @IBOutlet var TiendaEmpleado: UILabel!
-    @IBOutlet var statusEmpleado: UILabel!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

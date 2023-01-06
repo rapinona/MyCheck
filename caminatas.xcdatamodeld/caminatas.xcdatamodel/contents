@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EmpleadoAsignadoDC" representedClassName="EmpleadoAsignadoDC" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="id_empleado" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id_recorrido" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="nombre" optional="YES" attributeType="String"/>
+        <attribute name="puesto" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="String"/>
+        <attribute name="tienda" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="RecorridoCD" representedClassName="RecorridoCD" syncable="YES">
+        <attribute name="asignadoPor" optional="YES" attributeType="String"/>
+        <attribute name="descripcion" optional="YES" attributeType="String"/>
+        <attribute name="fecha_fin" optional="YES" attributeType="String"/>
+        <attribute name="fecha_inicio" optional="YES" attributeType="String"/>
+        <attribute name="id_recorrido" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="nombre" optional="YES" attributeType="String"/>
+        <attribute name="status" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="empleados" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EmpleadoAsignadoDC"/>
+    </entity>
+</model>

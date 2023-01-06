@@ -1,6 +1,8 @@
 PODS:
   - iOSDropDown (0.4.0)
   - IQKeyboardManagerSwift (6.5.10)
+  - MFCard (1.2.7)
+  - RSSelectionMenu (7.1.3)
   - SideMenu (6.5.0)
   - TabPageViewController (0.2.8)
   - ZCardView (0.1.0)
@@ -8,6 +10,8 @@ PODS:
 DEPENDENCIES:
   - iOSDropDown (from `https://github.com/jriosdev/iOSDropDown.git`)
   - IQKeyboardManagerSwift
+  - MFCard
+  - RSSelectionMenu
   - SideMenu
   - TabPageViewController (~> 0.2)
   - ZCardView
@@ -15,6 +19,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - IQKeyboardManagerSwift
+    - MFCard
+    - RSSelectionMenu
     - SideMenu
     - TabPageViewController
     - ZCardView
@@ -31,10 +37,12 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   iOSDropDown: 9b61391b4137a71b7154b4f7cdac249bcee9f9a9
   IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  MFCard: ab4b84ec3299196135f3c6bf84ffed703be64939
+  RSSelectionMenu: 873d62ebbaef138519f6cf3f073412c2b5d94c2c
   SideMenu: f583187d21c5b1dd04c72002be544b555a2627a2
   TabPageViewController: 8bd4104909754416b35a98f3b72a5b674ab20dd5
   ZCardView: 667e90343022a51c4babe494dfbd49c238f5505c
 
-PODFILE CHECKSUM: 66c79a9a77184ba72a614b7f1e8c4ae02a2036f4
+PODFILE CHECKSUM: 1ba1c3370ef148cc1be00b5c50e51d17043bc3db
 
 COCOAPODS: 1.11.3

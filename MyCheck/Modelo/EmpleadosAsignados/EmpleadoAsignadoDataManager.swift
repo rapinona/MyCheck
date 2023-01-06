@@ -7,13 +7,12 @@
 
 import Foundation
 
-class RespuestaDataManager{
+class EmpleadoDataManager{
     
-    private var respuestas : [Respuesta] = []
+    private var empleados : [EmpleadoAsignado] = []
     
-    func fetch(id_recorrido : Int,id_empleado : Int,completion: @escaping () -> Void){
-        
-        guard let laURL = URL(string: "https://my.api.mockaroo.com/respuestas/"+String(id_recorrido)+"/"+String(id_empleado)+".json")
+    func fetch( id_recorrido : Int, completion: @escaping () -> Void){
+        guard let laURL = URL(string: "https://my.api.mockaroo.com/empleadoAsignado/"+String(id_recorrido)+".json")
         else {return}
         
         print(laURL)
@@ -31,8 +30,8 @@ class RespuestaDataManager{
                         
             if let data = data {
                 do{
-                    let results = try JSONDecoder().decode([Respuesta].self,from: data)
-                    self.respuestas = results
+                    let results = try JSONDecoder().decode([EmpleadoAsignado].self,from: data)
+                    self.empleados = results
                     completion()
                 }
                 catch{
@@ -43,18 +42,13 @@ class RespuestaDataManager{
         task.resume()
     }
     
-    func respuestasCount() -> Int{
-        return respuestas.count
+    func empleadosCount() -> Int{
+        return empleados.count
     }
     
-    func respuestaAt(index:Int) -> Respuesta{
-        return respuestas[index]
-    }
-    
-    func updateCumple(index:Int,cumple:Bool){
-        respuestas[index].cumple = cumple
-        
-        return
+    func empleadoAt(index:Int) -> EmpleadoAsignado{
+        return empleados[index]
     }
     
 }
+

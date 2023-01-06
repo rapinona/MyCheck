@@ -12,16 +12,21 @@ class NuevoRecorridoViewController: UIViewController {
     
     
     @IBOutlet weak var dropdownRecorrido: DropDown!
+    let tiendasDM = TiendaDataManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.tabBarController?.selectedIndex=1
         
-        // The list of array to display. Can be changed dynamically
-        dropdownRecorrido.optionArray = ["Option 1", "Option 2", "Option 3"]
-        //Its Id Values and its optional
-        dropdownRecorrido.optionIds = [1,23,54]
+        self.tiendasDM.fetch(){
+            DispatchQueue.main.async {
+                self.dropdownRecorrido.optionArray = self.tiendasDM.todasTiendasNombre()
+                //Its Id Values and its optional
+                self.dropdownRecorrido.optionIds = self.tiendasDM.todasTiendasID()
+            }
+        }
+
         dropdownRecorrido.selectedRowColor = UIColor(red: 0.45, green: 0.95, blue: 0.44, alpha: 1.00)
         dropdownRecorrido.checkMarkEnabled = false
 

@@ -13,9 +13,9 @@ struct Respuesta :Decodable {
     let id_empleado : Int
     let pregunta : String
     let Observaciones : String
-    let foto : String
+    let foto : String?
     let categoria : String
-    var cumple : String
+    var cumple : Bool
     
     enum CodingKeys : String , CodingKey{
         case id_recorrido

@@ -7,13 +7,12 @@
 
 import Foundation
 
-class RespuestaDataManager{
+class TiendaDataManager{
     
-    private var respuestas : [Respuesta] = []
+    private var tiendas : [Tienda] = []
     
-    func fetch(id_recorrido : Int,id_empleado : Int,completion: @escaping () -> Void){
-        
-        guard let laURL = URL(string: "https://my.api.mockaroo.com/respuestas/"+String(id_recorrido)+"/"+String(id_empleado)+".json")
+    func fetch(completion: @escaping () -> Void){
+        guard let laURL = URL(string: "https://my.api.mockaroo.com/tiendas.json")
         else {return}
         
         print(laURL)
@@ -31,8 +30,8 @@ class RespuestaDataManager{
                         
             if let data = data {
                 do{
-                    let results = try JSONDecoder().decode([Respuesta].self,from: data)
-                    self.respuestas = results
+                    let results = try JSONDecoder().decode([Tienda].self,from: data)
+                    self.tiendas = results
                     completion()
                 }
                 catch{
@@ -43,18 +42,23 @@ class RespuestaDataManager{
         task.resume()
     }
     
-    func respuestasCount() -> Int{
-        return respuestas.count
+    func tiendasCount() -> Int{
+        return tiendas.count
     }
     
-    func respuestaAt(index:Int) -> Respuesta{
-        return respuestas[index]
+    func tiendaAt(index:Int) -> Tienda{
+        return tiendas[index]
     }
     
-    func updateCumple(index:Int,cumple:Bool){
-        respuestas[index].cumple = cumple
-        
-        return
+    func todasTiendasNombre() -> [String]{
+        let nombres = tiendas.map({$0.tienda})
+        return nombres
+    }
+    
+    func todasTiendasID() -> [Int]{
+        let ids = tiendas.map({$0.id})
+        return ids
     }
     
 }
+

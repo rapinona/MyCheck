@@ -10,8 +10,10 @@ import UIKit
 class EstatusViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDataSource, UITableViewDelegate{
     
     let estatusDM = EstatusDataManager()
-    let recorridoDM = RecorridosDataManager()
+    let context = (UIApplication.shared.delegate! as! AppDelegate).persistentContainer.viewContext
+    var recorridoDM : RecorridosDataManager?
     var selectedEstatus: Int = 0
+    var todosRecorridos : [Recorrido]?
     var currentRecorrido: Recorrido?
     
     @IBOutlet var EstatusCollectionView: UICollectionView!
@@ -41,6 +43,7 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
             
         self.selectedEstatus = indexPath.row
         self.EstatusCollectionView.reloadData()
+        self.RecorridoTable.reloadData()
         self.EstatusCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
@@ -67,24 +70,62 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     //Table View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        recorridoDM.recorridosCount()
+        switch selectedEstatus {
+        case 0:
+            return recorridoDM!.enviadosCount()
+        case 1:
+            return recorridoDM!.recibidosCount()
+        case 2:
+            return recorridoDM!.enProcesoCount()
+        case 3:
+            print(recorridoDM!.CompletadosCount())
+            return recorridoDM!.CompletadosCount()
+        default:
+            print("salio mal")
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "recorrido", for: indexPath) as! RecorridoTableViewCell
         
-        let recorrido = recorridoDM.recorridoAt(index: indexPath.row)
+        let recorrido : Recorrido?
         
-        cell.nombre.text = recorrido.nombre
-        cell.fecha_fin.text = recorrido.fecha_fin
-        cell.tienda.text = recorrido.descripcion
+        switch selectedEstatus {
+        case 0:
+            recorrido = recorridoDM!.enviadosAt(index: indexPath.row)
+        case 1:
+            recorrido = recorridoDM!.recibidosAt(index: indexPath.row)
+            print(recorrido ?? "error")
+        case 2:
+            recorrido = recorridoDM!.enProcesoAt(index: indexPath.row)
+        case 3:
+            recorrido = recorridoDM!.completadosAt(index: indexPath.row)
+        default:
+            recorrido = recorridoDM!.recorridoAt(index: indexPath.row)
+        }
+        
+        cell.nombre.text = recorrido?.nombre
+        cell.fecha_fin.text = recorrido?.fecha_fin
+        cell.tienda.text = recorrido?.descripcion
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentRecorrido = recorridoDM.recorridoAt(index: indexPath.row)
+        switch selectedEstatus {
+        case 0:
+            currentRecorrido = recorridoDM!.enviadosAt(index: indexPath.row)
+        case 1:
+            currentRecorrido = recorridoDM!.recibidosAt(index: indexPath.row)
+        case 2:
+            currentRecorrido = recorridoDM!.enProcesoAt(index: indexPath.row)
+        case 3:
+            currentRecorrido = recorridoDM!.completadosAt(index: indexPath.row)
+        default:
+            currentRecorrido = recorridoDM!.recorridoAt(index: indexPath.row)
+        }
         self.performSegue(withIdentifier: "detalles", sender: Self.self)
         
         
@@ -104,6 +145,8 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         let indexPath = IndexPath(row: selectedEstatus, section: 0)
         self.EstatusCollectionView.reloadData()
+        self.RecorridoTable.reloadData()
+
         self.EstatusCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
@@ -115,6 +158,8 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
         let indexPath = IndexPath(row: selectedEstatus, section: 0)
         self.EstatusCollectionView.reloadData()
+        self.RecorridoTable.reloadData()
+
         self.EstatusCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
     }
     
@@ -123,9 +168,14 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.recorridoDM.fetch()
-        
         let indexPath = IndexPath(row: self.selectedEstatus, section: 0)
+        
+        recorridoDM = RecorridosDataManager(context:context)
+        self.recorridoDM!.fetch(anteriores: self.todosRecorridos!,context: context){
+            DispatchQueue.main.async {
+                self.RecorridoTable.reloadData()
+            }
+        }
         
         self.EstatusCollectionView.layoutIfNeeded()
         self.EstatusCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
