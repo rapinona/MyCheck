@@ -7,6 +7,7 @@
 
 import UIKit
 import SideMenu
+import Network
 
 class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollectionViewDataSource,UITableViewDelegate, UITableViewDataSource {
     
@@ -132,15 +133,25 @@ class MiVistaViewController: UIViewController,UICollectionViewDelegate,UICollect
         
         recorridoDM = RecorridosDataManager(context:context)
 
-        recorridoDM!.fetch(anteriores:[],context:context){
+        recorridoDM!.fetch(context:context){
             DispatchQueue.main.async {
                 self.recorridoTableView.reloadData()
                 self.EstatusCard.reloadData()
-                self.todosRecorridos = self.recorridoDM!.todosRecorridos()
-                
             }
         }
-        // Do any additional setup after loading the view.
+        
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            if path.status != .satisfied {
+                let alert = UIAlertController(title: "My Team", message: "No hay conexión a internet.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                    NSLog("The \"OK\" alert occured.")
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }else{
+            }
+        }
+        monitor.start(queue: DispatchQueue.global())
     }
 
 }

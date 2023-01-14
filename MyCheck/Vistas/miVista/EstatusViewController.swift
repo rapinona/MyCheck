@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import Network
 
 class EstatusViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDataSource, UITableViewDelegate{
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     let estatusDM = EstatusDataManager()
-    let context = (UIApplication.shared.delegate! as! AppDelegate).persistentContainer.viewContext
     var recorridoDM : RecorridosDataManager?
     var selectedEstatus: Int = 0
     var todosRecorridos : [Recorrido]?
@@ -110,6 +111,11 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
         cell.fecha_fin.text = recorrido?.fecha_fin
         cell.tienda.text = recorrido?.descripcion
         
+        cell.delete.tag = indexPath.row
+        cell.edit.tag = indexPath.row
+        cell.delegate = self
+
+        
         return cell
     }
     
@@ -171,7 +177,7 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
         let indexPath = IndexPath(row: self.selectedEstatus, section: 0)
         
         recorridoDM = RecorridosDataManager(context:context)
-        self.recorridoDM!.fetch(anteriores: self.todosRecorridos!,context: context){
+        self.recorridoDM!.fetch(context: context){
             DispatchQueue.main.async {
                 self.RecorridoTable.reloadData()
             }
@@ -180,7 +186,127 @@ class EstatusViewController: UIViewController, UICollectionViewDelegate, UIColle
         self.EstatusCollectionView.layoutIfNeeded()
         self.EstatusCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
 
-        // Do any additional setup after loading the view.
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            if path.status != .satisfied {
+                let alert = UIAlertController(title: "My Team", message: "No hay conexión a internet.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                    NSLog("The \"OK\" alert occured.")
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }else{
+            }
+        }
+        monitor.start(queue: DispatchQueue.global())
     }
 
+}
+
+
+extension EstatusViewController : RecorridoTableViewCellDelegate{
+    func didEditButton(with tag: Int) {
+        let alert = UIAlertController(title: "My Team", message: "Selecciona el estatus deseado.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("En Proceso", comment: "Default action"), style: .default, handler: { _ in
+            switch self.selectedEstatus {
+            case 0:
+                self.recorridoDM!.editEnviadosAt(index: tag,context:self.context,status: 2)
+            case 1:
+                self.recorridoDM!.editRecibidosAt(index: tag,context:self.context,status: 2)
+            case 2:
+                self.recorridoDM!.editEnProcesoAt(index: tag,context:self.context,status: 2)
+            case 3:
+                self.recorridoDM!.editComletadosAt(index: tag,context:self.context,status: 2)
+            default:
+                self.recorridoDM!.editEnviadosAt(index: tag,context:self.context,status: 2)
+            }
+            
+            self.RecorridoTable.reloadData()
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Completada", comment: "Completada"), style: .default, handler: { _ in
+            switch self.selectedEstatus {
+            case 0:
+                self.recorridoDM!.editEnviadosAt(index: tag,context:self.context,status: 3)
+            case 1:
+                self.recorridoDM!.editRecibidosAt(index: tag,context:self.context,status: 3)
+            case 2:
+                self.recorridoDM!.editEnProcesoAt(index: tag,context:self.context,status: 3)
+            case 3:
+                self.recorridoDM!.editComletadosAt(index: tag,context:self.context,status: 3)
+            default:
+                self.recorridoDM!.editEnviadosAt(index: tag,context:self.context,status: 3)
+            }
+            
+            self.RecorridoTable.reloadData()
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancelar", comment: "Default action"), style: .destructive, handler: { _ in
+            NSLog("The \"OK\" alert occured.")
+        }))
+        self.present(alert, animated: true, completion: nil)
+
+    }
+    
+    func didTapButton(with tag: Int) {
+        
+        
+        let alert = UIAlertController(title: "My Team", message: "¿Estas seguro de eliminar la asignación?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancelar", comment: "Default action"), style: .destructive, handler: { _ in
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+            switch self.selectedEstatus {
+            case 0:
+                self.currentRecorrido = self.recorridoDM!.enviadosAt(index: tag)
+                self.recorridoDM!.deleteEnviadosAt(index: tag)
+                let recorridoToRemove = self.recorridoDM!.recorridoCDAt(ui : self.currentRecorrido?.id_recorrido ?? 0)
+                if(recorridoToRemove != nil){
+                    self.context.delete(recorridoToRemove!)
+                    do{
+                        try self.context.save()
+                    }catch{
+                        
+                    }
+                }
+            case 1:
+                self.currentRecorrido = self.recorridoDM!.recibidosAt(index: tag)
+                self.recorridoDM!.deleteRecibidosAt(index: tag)
+                let recorridoToRemove = self.recorridoDM!.recorridoCDAt(ui : self.currentRecorrido?.id_recorrido ?? 0)
+                if(recorridoToRemove != nil){
+                    self.context.delete(recorridoToRemove!)
+                    do{
+                        try self.context.save()
+                    }catch{
+                        
+                    }
+                }
+            case 2:
+                self.currentRecorrido = self.recorridoDM!.enProcesoAt(index: tag)
+                self.recorridoDM!.deleteEnProcesoAt(index: tag)
+                let recorridoToRemove = self.recorridoDM!.recorridoCDAt(ui : self.currentRecorrido?.id_recorrido ?? 0)
+                if(recorridoToRemove != nil){
+                    self.context.delete(recorridoToRemove!)
+                    do{
+                        try self.context.save()
+                    }catch{
+                        
+                    }
+                }
+            case 3:
+                self.currentRecorrido = self.recorridoDM!.completadosAt(index: tag)
+                self.recorridoDM!.deleteCompletadosAt(index: tag)
+                let recorridoToRemove = self.recorridoDM!.recorridoCDAt(ui : self.currentRecorrido?.id_recorrido ?? 0)
+                if(recorridoToRemove != nil){
+                    self.context.delete(recorridoToRemove!)
+                    do{
+                        try self.context.save()
+                    }catch{
+                        
+                    }
+                }
+            default:
+                self.recorridoDM!.deleteRecorridosAt(index: tag)
+            }
+            
+            self.RecorridoTable.reloadData()
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
 }

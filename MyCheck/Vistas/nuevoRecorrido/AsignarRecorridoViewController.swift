@@ -8,8 +8,9 @@
 import UIKit
 import RSSelectionMenu
 
+
 class AsignarRecorridoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
-    
+
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return nombre.count
@@ -44,6 +45,10 @@ class AsignarRecorridoViewController: UIViewController,UITableViewDelegate, UITa
     let tiendasDM = TiendaDataManager()
     let puestoDM = PuestoDataManager()
     let empleadoDM = EmpleadosDataManager()
+    var recorridoCD : RecorridoCD?
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +59,14 @@ class AsignarRecorridoViewController: UIViewController,UITableViewDelegate, UITa
         
         self.tiendasDM.fetch(){
             DispatchQueue.main.async {
+                if(self.tiendasDM.internetStatus == false){
+                    let alert = UIAlertController(title: "My Team", message: "No hay conexión a internet.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                        NSLog("The \"OK\" alert occured.")
+                    }))
+                    self.present(alert, animated: true, completion: nil)
+
+                }
                 self.tiendaOpciones = self.tiendasDM.todasTiendasNombre()
             }
         }
@@ -273,4 +286,32 @@ class AsignarRecorridoViewController: UIViewController,UITableViewDelegate, UITa
             self.todosNombresBtn.setTitle("Todas", for: .normal)
         }
     }
+    
+    
+    @IBAction func cancelar(_ sender: Any) {
+        navigationController?.popToRootViewController(animated: true)
+        self.tabBarController?.selectedIndex=1
+
+    }
+    
+    @IBAction func guardarRecorrido(_ sender: Any) {
+    
+        if(self.recorridoCD !== nil && self.nombre.count > 0){
+            do{
+                try self.context.save()
+                navigationController?.popToRootViewController(animated: true)
+                self.tabBarController?.selectedIndex=1
+            }
+            catch{
+                print("Error info: \(error)")
+            }
+        }else{
+            let alert = UIAlertController(title: "My Team", message: "No ha terminado de generar el recorrido.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
 }

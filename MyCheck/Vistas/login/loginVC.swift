@@ -24,6 +24,10 @@ class loginVC: UIViewController{
         // Validar si el usuario ya inició sesión
         GIDSignIn.sharedInstance.restorePreviousSignIn {
             user, error in
+            if((user) != nil){
+                print(user?.profile?.email)
+                self.performSegue(withIdentifier: "login", sender: Self.self)
+            }
             guard let signInUser = user else {
                 print ("Ocurrió un error al autenticar \(String(describing: error))")
                         return
@@ -113,13 +117,19 @@ class loginVC: UIViewController{
         let configuration = GIDConfiguration(clientID: "674182819895-5vg9hg5v894g2uhi5e5s46ugf75v4k21.apps.googleusercontent.com")
         GIDSignIn.sharedInstance.signIn(with: configuration, presenting: self){
             user,error in
-            guard let signInUser = user else{
+            if((user) != nil){
+                guard let signInUser = user else{
+                    print("Ocurrio un error al autenticar ")
+                    return
+                }
+                let email =  signInUser.profile?.email ?? ""
+                print(email)
+                self.performSegue(withIdentifier: "login", sender: Self.self)
+            }
+            else{
                 print("Ocurrio un error al autenticar ")
                 return
             }
-            let email =  signInUser.profile?.email ?? ""
-            print(email)
-            self.performSegue(withIdentifier: "login", sender: Self.self)
         }
     }
     

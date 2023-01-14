@@ -15,7 +15,7 @@ struct Recorrido :Decodable {
     let asignadoPor : String
     let fecha_inicio : String
     let fecha_fin : String
-    let status : Int
+    var status : Int
     
     enum CodingKeys : String , CodingKey{
         case id_recorrido = "id"

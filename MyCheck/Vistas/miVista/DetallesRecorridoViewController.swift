@@ -6,13 +6,14 @@
 //
 
 import UIKit
+import Network
 
 class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UITableViewDataSource {
 
 
     var currentEmpleado : EmpleadoAsignado?
     var currentRecorrido : Recorrido?
-    let empleadoDM = EmpleadoDataManager()
+    var empleadoDM : EmpleadoDataManager?
     @IBOutlet var DescripcionRecorrido: UITextView!
     @IBOutlet var NombreRecorrido: UILabel!
     @IBOutlet var FechaInicio: UILabel!
@@ -23,14 +24,14 @@ class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UIT
     //EMPLEADOS TABLE
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return empleadoDM.empleadosCount()
+        return empleadoDM!.empleadosCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "empleado", for: indexPath) as! EmpleadoTableViewCell
         
-        let empleado = empleadoDM.empleadoAt(index: indexPath.row)
+        let empleado = empleadoDM!.empleadoAt(index: indexPath.row)
         
         cell.NombreEmpleado.text = empleado.nombre
         cell.TiendaEmpleado.text = empleado.tienda
@@ -51,7 +52,7 @@ class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentEmpleado = empleadoDM.empleadoAt(index: indexPath.row)
+        currentEmpleado = empleadoDM?.empleadoAt(index: indexPath.row)
         
         self.performSegue(withIdentifier: "respuestas", sender: Self.self)
     }
@@ -66,16 +67,30 @@ class DetallesRecorridoViewController: UIViewController,UITableViewDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.empleadoDM.fetch(id_recorrido: currentRecorrido!.id_recorrido){
+        empleadoDM = EmpleadoDataManager()
+        
+        empleadoDM!.fetch(id_recorrido: currentRecorrido!.id_recorrido){
             DispatchQueue.main.async {
                 self.EmpleadosTable.reloadData()
+                self.NombreRecorrido.text = self.currentRecorrido!.nombre
+                self.DescripcionRecorrido.text = self.currentRecorrido!.descripcion
+                self.FechaInicio.text = self.currentRecorrido!.fecha_inicio
+                self.FechaFin.text = self.currentRecorrido!.fecha_fin
             }
         }
-        self.NombreRecorrido.text = self.currentRecorrido!.nombre
-        self.DescripcionRecorrido.text = self.currentRecorrido!.descripcion
-        self.FechaInicio.text = self.currentRecorrido!.fecha_inicio
-        self.FechaFin.text = self.currentRecorrido!.fecha_fin
-        // Do any additional setup after loading the view.
+        
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            if path.status != .satisfied {
+                let alert = UIAlertController(title: "My Team", message: "No hay conexión a internet.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                    NSLog("The \"OK\" alert occured.")
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }else{
+            }
+        }
+        monitor.start(queue: DispatchQueue.global())
     }
     
 

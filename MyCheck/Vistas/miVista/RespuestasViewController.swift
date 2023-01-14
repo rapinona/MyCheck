@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Network
 
 class RespuestasViewController: UIViewController,  UITableViewDataSource, UITableViewDelegate{
     
@@ -88,12 +89,24 @@ class RespuestasViewController: UIViewController,  UITableViewDataSource, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         self.respuestasDM.fetch(id_recorrido:currentRecorrido,id_empleado:currentEmpleado){
             DispatchQueue.main.async {
                 self.RespuestaTable.reloadData()
             }
         }
-        // Do any additional setup after loading the view.
+        let monitor = NWPathMonitor()
+        monitor.pathUpdateHandler = { path in
+            if path.status != .satisfied {
+                let alert = UIAlertController(title: "My Team", message: "No hay conexión a internet.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .default, handler: { _ in
+                    NSLog("The \"OK\" alert occured.")
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }else{
+            }
+        }
+        monitor.start(queue: DispatchQueue.global())
     }
 
 }

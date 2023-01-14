@@ -15,26 +15,24 @@ class RespuestaDataManager{
         
         guard let laURL = URL(string: "https://my.api.mockaroo.com/respuestas/"+String(id_recorrido)+"/"+String(id_empleado)+".json")
         else {return}
-        
-        print(laURL)
-        
+                
         var request = URLRequest(url: laURL)
         request.setValue("42d45cc0", forHTTPHeaderField: "X-API-Key")
         request.httpMethod = "GET"
         let session = URLSession.shared
-        
+                
         let task = session.dataTask(with: request) { (data, response, error) in
-          // this is where the completion handler code goes
+            // this is where the completion handler code goes
             if let error = error {
                 print(error)
             }
-                        
+                                
             if let data = data {
                 do{
                     let results = try JSONDecoder().decode([Respuesta].self,from: data)
-                    self.respuestas = results
-                    completion()
-                }
+                        self.respuestas = results
+                        completion()
+                    }
                 catch{
                     print("Error en fetch")
                 }

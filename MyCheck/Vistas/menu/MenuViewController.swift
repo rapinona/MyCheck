@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 class MenuViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
     
@@ -37,6 +38,9 @@ class MenuViewController: UIViewController,UITableViewDataSource,UITableViewDele
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if(segues[indexPath.row] == "logout"){
+            GIDSignIn.sharedInstance.signOut()
+        }
         performSegue(withIdentifier: segues[indexPath.row], sender: nil)
     }
     

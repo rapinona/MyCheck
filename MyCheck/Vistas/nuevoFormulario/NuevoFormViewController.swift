@@ -9,8 +9,9 @@ import UIKit
 
 class NuevoFormViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var formulariosDM : FormulariosDataManager?
     var preguntas : [String] = []
-    var anteriores : [Formulario]?
     @IBOutlet var preguntasTable: UITableView!
     @IBOutlet var titulo: UITextField!
     
@@ -53,13 +54,8 @@ class NuevoFormViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()        // Do any additional setup after loading the view.
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let destination = segue.destination as! MisFormulariosViewController
-        let newForm:Formulario = Formulario.init(identifier: (self.anteriores?.count ?? 100)+1, name: self.titulo.text!)
-        destination.nuevo = newForm
-        destination.formularios = self.anteriores
+        formulariosDM = FormulariosDataManager(context: self.context)
+
     }
     
     
@@ -72,7 +68,17 @@ class NuevoFormViewController: UIViewController, UITableViewDelegate, UITableVie
             self.present(alert, animated: true, completion: nil)
 
         }else{
-            self.performSegue(withIdentifier: "regresoForm", sender: Self.self)
+            let newForm = FormularioCD(context: self.context)
+            
+            newForm.formulario = self.titulo.text!
+            
+            do{
+                try self.context.save()
+            }
+            catch{
+                print("Error info: \(error)")
+            }
+            _ = navigationController?.popViewController(animated: true) 
         }
     }
     

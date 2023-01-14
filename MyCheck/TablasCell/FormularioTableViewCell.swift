@@ -7,8 +7,15 @@
 
 import UIKit
 
+protocol FormularioTableViewCellDelegate : AnyObject{
+    func didTapButton(with tag:Int)
+}
+
 class FormularioTableViewCell: UITableViewCell {
 
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    var delegate : FormularioTableViewCellDelegate?
     
     @IBOutlet var nombreForm: UILabel!
     @IBOutlet var deleteBtn: UIButton!
@@ -23,5 +30,10 @@ class FormularioTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    @IBAction func deleteForm(_ sender: UIButton) {
+        delegate?.didTapButton(with: sender.tag)
+    }
+    
 
 }
